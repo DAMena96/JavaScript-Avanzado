@@ -1,0 +1,41 @@
+body {
+    background-image: url("https://e1.pxfuel.com/desktop-wallpaper/269/183/desktop-wallpaper-rotom-pokedex-backgrounds-pokedex.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-color: #f0f0f0;
+    color: #333;
+    height: 100vh; /* Asegura que el body ocupe toda la altura de la ventana del navegador */
+}
+
+.container {
+    padding: 20px;
+}
+
+
+
+.form-control {
+    border-color: #36bef4;
+    border-width: 2px;
+    border-radius: 20px;
+}
+
+
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.btn-primary {
+    background-color:#36bef4;
+    border: none;
+    border-radius: 20px;
+}
+
+.btn-secondary {
+    background-color:#36bef4;
+    border: none;
+    border-radius: 20px;
+}
