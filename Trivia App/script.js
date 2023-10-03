@@ -1,74 +1,77 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const triviaForm = document.getElementById('trivia-form');
-    const triviaContainer = document.getElementById('trivia-container');
-    const scoreElement = document.getElementById('puntaje');
-    const newTriviaButton = document.getElementById('nueva-trivia');
+let puntaje = 0;
+let indicePreguntaActual = 0;
+let preguntas = [];
+const contenedorQuiz = document.getElementById('contenedor-quiz');
+const botonSiguiente = document.getElementById('siguiente-pregunta');
+const botonNuevaTrivia = document.getElementById('nueva-trivia');
+const mostrarPuntaje = document.getElementById('puntaje');
 
-    async function obtenerTrivia(event) {
-        event.preventDefault();
 
-        const categoria = document.getElementById('categoria').value;
-        const dificultad = document.getElementById('dificultad').value;
-        const tipo = document.getElementById('tipo').value;
+const seleccionCategoria = document.getElementById('categoria');
+const seleccionDificultad = document.getElementById('dificultad');
+const seleccionTipo = document.getElementById('tipo');
 
-        const apiUrl = `https://opentdb.com/api.php?amount=10&category=${categoria}&difficulty=${dificultad}&type=${tipo}`;
 
-        try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) {
-                throw new Error('No se pudo obtener las preguntas.');
-            }
-            const data = await response.json();
-            mostrarPreguntas(data.results);
-        } catch (error) {
-            console.error('Error al obtener las preguntas:', error);
-        }
-    }
-
-    function mostrarPreguntas(preguntas) {
-        triviaContainer.innerHTML = '';
-
-        preguntas.forEach((pregunta, indice) => {
-            const preguntaDiv = document.createElement('div');
-            preguntaDiv.classList.add('pregunta');
-
-            const preguntaTexto = document.createElement('p');
-            preguntaTexto.textContent = `Pregunta ${indice + 1}: ${pregunta.question}`;
-            preguntaDiv.appendChild(preguntaTexto);
-
-            const opcionesRespuesta = document.createElement('ul');
-            opcionesRespuesta.classList.add('opciones-respuesta');
-
-   
-            pregunta.incorrect_answers.forEach(respuesta => {
-                const opcion = document.createElement('li');
-                opcion.textContent = respuesta;
-                opcionesRespuesta.appendChild(opcion);
-            });
-
-            const respuestaCorrecta = document.createElement('li');
-            respuestaCorrecta.textContent = pregunta.correct_answer;
-            opcionesRespuesta.appendChild(respuestaCorrecta);
-
-            shuffle(opcionesRespuesta.children);
-
-            preguntaDiv.appendChild(opcionesRespuesta);
-            triviaContainer.appendChild(preguntaDiv);
+function obtenerPreguntas(cantidad = 10, categoria, dificultad, tipo) {
+    fetch(`https://opentdb.com/api.php?amount=${cantidad}&category=${categoria}&difficulty=${dificultad}&type=${tipo}`)
+        .then(response => response.json())
+        .then(data => {
+            preguntas = data.results;
+            mostrarPregunta();
         });
+}
+
+
+function mostrarPregunta() {
+    const pregunta = preguntas[indicePreguntaActual];
+    contenedorQuiz.innerHTML = `
+        <h2>${pregunta.question}</h2>
+        <button class="respuesta">${pregunta.correct_answer}</button>
+        ${pregunta.incorrect_answers.map(respuesta => `<button class="respuesta">${respuesta}</button>`).join('')}
+    `;
+
+
+    document.querySelectorAll('.respuesta').forEach(boton => {
+        boton.addEventListener('click', seleccionarRespuesta);
+    });
+}
+
+
+function seleccionarRespuesta(e) {
+    const botonSeleccionado = e.target;
+    const respuestaCorrecta = preguntas[indicePreguntaActual].correct_answer;
+
+
+    if (botonSeleccionado.innerText === respuestaCorrecta) {
+        puntaje += 100;
+        mostrarPuntaje.innerText = `Puntaje: ${puntaje}`;
     }
 
-    function shuffle(lista) {
-        for (let i = lista.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [lista[i], lista[j]] = [lista[j], lista[i]];
-        }
+  
+    indicePreguntaActual++;
+    if (indicePreguntaActual < preguntas.length) {
+        mostrarPregunta();
+    } else {
+        contenedorQuiz.innerHTML = '<h2>Has completado la trivia</h2>';
     }
+}
 
-    function reiniciarTrivia() {
-        triviaContainer.innerHTML = '';
-        scoreElement.textContent = 'Puntaje: 0';
-    }
 
-    triviaForm.addEventListener('submit', obtenerTrivia);
-    newTriviaButton.addEventListener('click', reiniciarTrivia);
-});
+function iniciarNuevaTrivia() {
+    puntaje = 0;
+    indicePreguntaActual = 0;
+    mostrarPuntaje.innerText = `Puntaje: ${puntaje}`;
+   
+    obtenerPreguntas(
+        10, 
+        seleccionCategoria.value, 
+        seleccionDificultad.value, 
+        seleccionTipo.value
+    );
+}
+
+botonSiguiente.addEventListener('click', mostrarPregunta);
+botonNuevaTrivia.addEventListener('click', iniciarNuevaTrivia);
+
+
+obtenerPreguntas();
