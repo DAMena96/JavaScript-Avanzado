@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Trivia App/styles.css">
+    <title>Juego de Trivia</title>
+</head>
+<body>
+    <h1>Juego de Trivia</h1>
+    <form id="trivia-form">
+        <label for="categoria">Categoría:</label>
+<select id="categoria">
+    <option value="9">General Knowledge</option>
+    <option value="11">Entertainment: Film</option>
+    <option value="12">Entertainment: Music</option>
+    <option value="15">Video Games</option>
+    <option value="18">Science: Computers</option>
+</select>
+
+<label for="dificultad">Dificultad:</label>
+<select id="dificultad">
+    <option value="easy">Fácil</option>
+    <option value="medium">Moderada</option>
+    <option value="hard">Difícil</option>
+</select>
+
+<label for="tipo">Tipo de Pregunta:</label>
+<select id="tipo">
+    <option value="multiple">Múltiple Opción</option>
+    <option value="boolean">Verdadero/Falso</option>
+</select>
+
+<button type="submit">Generar Trivia</button>
+
+    </div>
+    <p id="puntaje">Puntaje: 0</p>
+    <button id="nueva-trivia">Nueva Trivia</button>
+    <script src="script.js"></script>
+</body>
+</html>
